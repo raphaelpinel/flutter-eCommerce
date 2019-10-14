@@ -9,9 +9,22 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primaryColor: Colors.cyan[400],
-        accentColor: Colors.deepOrange[200],
-      ),
+          primaryColor: Colors.cyan[400],
+          accentColor: Colors.deepOrange[200],
+          brightness: Brightness.dark,
+          textTheme: TextTheme(
+            headline: TextStyle(
+              fontSize: 72.0,
+              fontWeight: FontWeight.bold,
+            ),
+            title: TextStyle(
+              fontSize: 36.0,
+              fontStyle: FontStyle.italic,
+            ),
+            body1: TextStyle(
+              fontSize: 18.0,
+            ),
+          )),
       home: MyHomePage(title: 'Flutter eCommerce'),
     );
   }
@@ -85,6 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             Text(
               'You have pushed the button this many times:',
+              style: Theme.of(context).textTheme.body1,
             ),
             Text(
               '$_counter',
