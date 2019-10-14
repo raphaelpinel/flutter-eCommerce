@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_ecommerce/pages/register_page.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -25,7 +27,7 @@ class MyApp extends StatelessWidget {
               fontSize: 18.0,
             ),
           )),
-      home: MyHomePage(title: 'Flutter eCommerce'),
+      home: RegisterPage(),
     );
   }
 }
