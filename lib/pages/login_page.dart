@@ -1,37 +1,20 @@
 import 'package:flutter/material.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key key}) : super(key: key);
 
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
-  String _username, _email, _password;
+  String _email, _password;
 
   Widget _showTitle() => Text(
-        'Register',
+        'Login',
         style: Theme.of(context).textTheme.headline,
-      );
-
-  Widget _showUserNameInput() => Padding(
-        padding: EdgeInsets.only(top: 20.0),
-        child: TextFormField(
-          onSaved: (val) => _username = val,
-          validator: (val) => val.length < 6 ? 'Username too short' : null,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: 'Username',
-            hintText: 'Enter username, min length 6',
-            icon: Icon(
-              Icons.face,
-              color: Colors.grey,
-            ),
-          ),
-        ),
       );
 
   Widget _showEmailInput() => Padding(
@@ -78,18 +61,18 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Column(
           children: <Widget>[
             RaisedButton(
-              child: Text('Submit',
+              child: Text('Login',
                   style: Theme.of(context).textTheme.body1.copyWith(
                         color: Colors.black,
                       )),
               onPressed: _submit,
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).accentColor,
               elevation: 8.0,
             ),
             FlatButton(
-              child: Text('Existing User? Login'),
+              child: Text('User? Login'),
               onPressed: () =>
-                  Navigator.pushReplacementNamed(context, '/login'),
+                  Navigator.of(context).pushReplacementNamed('/register'),
             )
           ],
         ),
@@ -99,7 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
-      print('username: $_username, email: $_email, password: $_password');
+      print('email: $_email, password: $_password');
     }
   }
 
@@ -121,7 +104,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   _showTitle(),
-                  _showUserNameInput(),
                   _showEmailInput(),
                   _showPasswordInput(),
                   _showFormActions(),
