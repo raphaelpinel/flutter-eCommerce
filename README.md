@@ -3,7 +3,9 @@
 A new Flutter project.
 
 ## Getting Started
-
+We are using a backend with Strapi which is not included in this code.
+To start the backend server, run `cd server && strapi start`
+If you are using your app in a different location, make sure to whitelist your IP address at cloud.mongodb.com
 This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
