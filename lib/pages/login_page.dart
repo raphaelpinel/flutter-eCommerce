@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key key}) : super(key: key);
@@ -8,8 +11,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
-  bool _obscurePassword = true;
+  bool _isSubmitting, _obscurePassword = true;
 
   String _email, _password;
 
@@ -70,15 +74,20 @@ class _LoginPageState extends State<LoginPage> {
         padding: EdgeInsets.only(top: 20.0),
         child: Column(
           children: <Widget>[
-            RaisedButton(
-              child: Text('Login',
-                  style: Theme.of(context).textTheme.body1.copyWith(
-                        color: Colors.black,
-                      )),
-              onPressed: _submit,
-              color: Theme.of(context).accentColor,
-              elevation: 8.0,
-            ),
+            _isSubmitting == true
+                ? CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Theme.of(context).accentColor),
+                  )
+                : RaisedButton(
+                    child: Text('Login',
+                        style: Theme.of(context).textTheme.body1.copyWith(
+                              color: Colors.black,
+                            )),
+                    onPressed: _submit,
+                    color: Theme.of(context).accentColor,
+                    elevation: 8.0,
+                  ),
             FlatButton(
               child: Text('New user? Register'),
               onPressed: () =>
@@ -92,13 +101,70 @@ class _LoginPageState extends State<LoginPage> {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
-      print('email: $_email, password: $_password');
+      _loginUser();
     }
+  }
+
+  void _loginUser() async {
+    setState(() => _isSubmitting = true);
+    http.Response response =
+        await http.post('http://localhost:1337/auth/local/', body: {
+      "identifier": _email,
+      "password": _password,
+    });
+    final responseData = json.decode(response.body);
+    if (response.statusCode == 200) {
+      setState(() => _isSubmitting = false);
+      _storeUserData(responseData);
+      _showSuccessSnack();
+      print('responseData: $responseData');
+      _redirectUser();
+    } else {
+      setState(() => _isSubmitting = false);
+      final String errorMsg = responseData['message'];
+      _showErrorSnack(errorMsg);
+    }
+  }
+
+  void _storeUserData(responseData) async {
+    final prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> user = responseData['user'];
+    user.putIfAbsent('jwt', () => responseData['jwt']);
+    prefs.setString('user', json.encode(user));
+  }
+
+  void _showSuccessSnack() {
+    final snackbar = SnackBar(
+      content: Text(
+        'You are successfully logged in!',
+        style: TextStyle(color: Colors.green),
+      ),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackbar);
+    _formKey.currentState.reset();
+  }
+
+  void _showErrorSnack(String errorMsg) {
+    final snackbar = SnackBar(
+      content: Text(
+        errorMsg,
+        style: TextStyle(color: Colors.red),
+      ),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackbar);
+    throw Exception('Error logging in: $errorMsg');
+  }
+
+  void _redirectUser() {
+    Future.delayed(Duration(seconds: 2), () {
+      Navigator.pushReplacementNamed(context, '/products');
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           'Register',
