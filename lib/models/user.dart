@@ -12,4 +12,13 @@ class User {
     @required this.email,
     @required this.jwt,
   });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      username: json['username'],
+      email: json['email'],
+      jwt: json['jwt'],
+    );
+  }
 }
