@@ -1,6 +1,10 @@
 # flutter_ecommerce
 
-A new Flutter project.
+An eCommerce app with Flutter
+try this user
+username: Olga08
+olga@gmail.com
+olgaolga
 
 ## Getting Started
 We are using a backend with Strapi which is not included in this code.
