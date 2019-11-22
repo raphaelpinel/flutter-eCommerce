@@ -65,25 +65,32 @@ class _ProductsPageState extends State<ProductsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, AppState>(
-      converter: (store) => store.state,
-      builder: (context, state) {
-        return Scaffold(
-          appBar: _appBar,
-          body: Container(
-            decoration: gradientBackground,
-            child: Column(
-              children: <Widget>[
-                Row(
-                  children: [
-                    Text('Products Page'),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+    return Scaffold(
+      appBar: _appBar,
+      body: Container(
+          decoration: gradientBackground,
+          child: StoreConnector<AppState, AppState>(
+            converter: (store) => store.state,
+            builder: (_, state) {
+              return Column(
+                children: <Widget>[
+                  Expanded(
+                    child: SafeArea(
+                      top: false,
+                      bottom: false,
+                      child: GridView.builder(
+                        itemCount: state.products.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2),
+                        itemBuilder: (context, i) =>
+                            Text(state.products[i]['name']),
+                      ),
+                    ),
+                  )
+                ],
+              );
+            },
+          )),
     );
   }
 }
